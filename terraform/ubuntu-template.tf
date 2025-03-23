@@ -1,34 +1,31 @@
 data "local_file" "ssh_public_key" {
-  filename = "./id_ed25519.pub"
+  filename = pathexpand("~/.ssh/id_ed25519.pub")
 }
 
 resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
   content_type = "snippets"
   datastore_id = "local"
-  node_name    = "slinkenprox1"
+  node_name    = "kennethl-pve"
 
   source_raw {
     data = <<-EOF
     #cloud-config
-    chpasswd:
-      list: |
-        ubuntu:example
-      expire: false
-    hostname: test-ubuntu
-    packages:
-      - qemu-guest-agent
+    hostname: ubuntu-template
+    timezone: Asia/Jakarta
     users:
       - default
       - name: ubuntu
-        groups: sudo
+        groups: 
+          - sudo
         shell: /bin/bash
         ssh-authorized-keys:
           - ${trimspace(data.local_file.ssh_public_key.content)}
         sudo: ALL=(ALL) NOPASSWD:ALL
+    package_update: true
+    packages:
+      - qemu-guest-agent
+      - net-tools
     runcmd:
-      - apt update
-      - apt install -y qemu-guest-agent net-tools
-      - timedatectl set-timezone America/Toronto
       - systemctl enable qemu-guest-agent
       - systemctl start qemu-guest-agent
       - echo "done" > /tmp/cloud-config.done
@@ -40,7 +37,7 @@ resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
 
 resource "proxmox_virtual_environment_vm" "ubuntu_template" {
   name      = "ubuntu-template"
-  node_name = "slinkenprox1"
+  node_name = "kennethl-pve"
 
   template = true
 
@@ -93,7 +90,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_template" {
 resource "proxmox_virtual_environment_download_file" "ubuntu_cloud_image" {
   content_type = "iso"
   datastore_id = "local"
-  node_name    = "slinkenprox1"
+  node_name    = "kennethl-pve"
 
   url = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
 

@@ -3,7 +3,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.73.0"
+      version = "0.73.2"
     }
     local = {
       source  = "hashicorp/local"
@@ -13,16 +13,14 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint = "https://192.168.18.101:8006/"
-
-  api_token = "root@pam!terraform-user=c46a1791-4a52-4512-ac79-5805b7951793"
-
-  insecure = true
-  tmp_dir  = "/var/tmp"
+  endpoint  = var.proxmox_endpoint
+  api_token = var.proxmox_api_token
+  insecure  = true
+  tmp_dir   = "/var/tmp"
 
   ssh {
     agent    = true
-    username = "root"
+    username = var.proxmox_ssh_username
   }
 }
 
