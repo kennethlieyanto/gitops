@@ -1,0 +1,9 @@
+services:
+  prometheus:
+    image: prom/prometheus:v3.6.0@sha256:d9a702d3f7f398540e7190c4d80dbb8a0dc95c1e481e8ebd8a08e5bcf83cf735
+    restart: unless-stopped
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - '${PROMETHEUS_DATA_PATH}:/prometheus'
