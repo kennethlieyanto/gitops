@@ -10,3 +10,5 @@ services:
     # adding the mount volume point which we create earlier
     volumes:
       - '${GRAFANA_DATA_PATH}:/var/lib/grafana'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
