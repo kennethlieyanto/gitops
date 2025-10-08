@@ -7,3 +7,5 @@ services:
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yml
       - '${PROMETHEUS_DATA_PATH}:/prometheus'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
