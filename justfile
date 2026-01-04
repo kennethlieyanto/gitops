@@ -1,6 +1,8 @@
 docker-service-dir := "docker-services"
 backup-ssh-host-name := "kennethl-ws"
 backup-ssh-username := "kennethl"
+just-path := "/home/kennethl/.cargo/bin/just"
+cron-log-path := "/home/kennethl/logs"
 
 list:
     ls {{ docker-service-dir }}
@@ -36,3 +38,13 @@ backup service:
     just start {{ service }}
 
     echo "Backup completed successfully!"
+
+backup-cron-install:
+    #!/bin/bash
+
+    # Add backup cronjobs
+    (crontab -l 2>/dev/null; echo "0 20 * * * cd $(pwd) && {{ just-path }} backup nginx >> {{ cron-log-path }}/backup-nginx.log 2>&1") | crontab -
+    (crontab -l 2>/dev/null; echo "0 20 * * * cd $(pwd) && {{ just-path }} backup actual-budget >> {{ cron-log-path }}/backup-actual-budget.log 2>&1") | crontab -
+
+    echo "Cronjobs installed!"
+    crontab -l
