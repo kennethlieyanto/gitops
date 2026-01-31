@@ -4,6 +4,9 @@ backup-ssh-username := "kennethl"
 just-path := "/home/kennethl/.cargo/bin/just"
 cron-log-path := "/home/kennethl/logs"
 
+default:
+    cd infra && uv run ansible-playbook -i ansible/inventory/production.yaml ansible/site.yaml
+
 list:
     ls {{ docker-service-dir }}
 

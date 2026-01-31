@@ -1,0 +1,13 @@
+all:
+  children:
+    kilisuci:
+      hosts:
+        ubuntu-server:
+
+    webservers:
+      hosts:
+        ubuntu-server:
+
+    linux-machine:
+      hosts:
+        ubuntu-server:
