@@ -5,7 +5,10 @@ just-path := "/home/kennethl/.cargo/bin/just"
 cron-log-path := "/home/kennethl/logs"
 
 default:
-    cd infra && uv run ansible-playbook -i ansible/inventory/production.yaml ansible/site.yaml
+    cd infra && uv run ansible-playbook -i ansible/inventory/production.yaml ansible/site.yaml 
+
+ansible-galaxy-setup:
+    cd infra && uv run ansible-galaxy install -r ansible/requirements.yaml -p ansible/roles/external
 
 list:
     ls {{ docker-service-dir }}
