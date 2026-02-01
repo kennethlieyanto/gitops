@@ -16,25 +16,32 @@ services:
     # See all options and more details at https://actualbudget.github.io/docs/Installing/Configuration
     # !! If you are not using any of these options, remove the 'environment:' tag entirely.
     volumes:
-      # Change './actual-data' below to the path to the folder you want Actual to store its data in on your server.
-      # '/data' is the path Actual will look for its files in by default, so leave that as-is.
-      - ./actual-data:/data
-      # Mount the certificate files into the container
-      # - ./ubuntu-server.taile7003c.ts.net.crt:/certs/ubuntu-server.taile7003c.ts.net.crt:ro
-      # - ./ubuntu-server.taile7003c.ts.net.key:/certs/ubuntu-server.taile7003c.ts.net.key:ro
+      - actual_data:/data
     networks:
       - ingress
     expose:
       - "5006"
     healthcheck:
-      # Enable health check for the instance
       test: ["CMD-SHELL", "node src/scripts/health-check.js"]
       interval: 60s
       timeout: 10s
       retries: 3
       start_period: 20s
     restart: unless-stopped
+    labels:
+      - docker-volume-backup.stop-during-backup=true
+
+  backup:
+    image: offen/docker-volume-backup:v2@sha256:2017b0e180cfe7f896117e2c10a05d6036c396de426112875456b808d8a51c6b
+    restart: unless-stopped
+    env_file: ./.backup.env
+    volumes:
+      - actual_data:/backup/actual-budget-backup:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 networks:
   ingress:
     external: true
+
+volumes:
+  actual_data:
