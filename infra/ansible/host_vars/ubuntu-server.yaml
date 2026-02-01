@@ -1,0 +1,3 @@
+ansible_host: ubuntu-server
+ansible_user: kennethl
+ansible_become_password: ***REMOVED***
