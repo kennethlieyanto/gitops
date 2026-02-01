@@ -1,4 +1,5 @@
-- hosts: webservers
+- name: Setup docker
+  hosts: webservers
   become: true
   roles:
     - geerlingguy.docker

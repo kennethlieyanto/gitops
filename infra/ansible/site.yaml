@@ -1,1 +1,2 @@
-- import_playbook: webservers.yaml
+- name: Import webserver configuration
+  import_playbook: webservers.yaml
