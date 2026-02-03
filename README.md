@@ -1,5 +1,7 @@
 # Homeserver
 
+IaC effort for homeserver.
+
 Push env to main (CHAD!)
 
 - [Just](https://github.com/casey/just): taskrunner
