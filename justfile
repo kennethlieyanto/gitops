@@ -4,13 +4,13 @@ default:
     @just --choose
 
 setup:
-    cd infra && uv run ansible-galaxy install -r ansible/requirements.yaml -p ansible/roles/external
+    uv sync && uv run ansible-galaxy install -r ansible/requirements.yaml -p ansible/roles/external
 
-run:
-    cd infra && uv run ansible-playbook -i ansible/inventory/production.yaml ansible/site.yaml 
+playbook:
+    uv run ansible-playbook -i ansible/inventory/production.yaml ansible/site.yaml 
 
 lint:
-    cd infra/ansible && uv run ansible-lint
+    uv run ansible-lint
 
 start service:
     cd {{ docker-service-dir }}/{{ service }} && docker compose up -d
