@@ -6,7 +6,7 @@ default:
 setup:
     uv sync && uv run ansible-galaxy install -r ansible/requirements.yaml -p ansible/roles/external
 
-playbook:
+play:
     uv run ansible-playbook -i ansible/inventory/production.yaml ansible/site.yaml 
 
 lint:
