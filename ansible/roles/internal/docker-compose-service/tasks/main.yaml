@@ -1,0 +1,16 @@
+- name: Ensure service directory exists
+  ansible.builtin.file:
+    path: "{{ docker_services_base_path }}/{{ service_name }}"
+    state: directory
+    mode: "0755"
+
+- name: Copy docker-compose files for {{ service_name }}
+  ansible.builtin.copy:
+    src: "docker-services/{{ service_name }}/"
+    dest: "{{ docker_services_base_path }}/{{ service_name }}/"
+    mode: "0644"
+  register: compose_files
+
+- name: Deploy {{ service_name }} with docker-compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_services_base_path }}/{{ service_name }}"

@@ -1,0 +1,18 @@
+- name: Setup docker
+  hosts: webservers
+  become: true
+  roles:
+    - geerlingguy.docker
+
+- name: Manage Docker Compose Services
+  hosts: ubuntu-server
+  become: true
+
+  tasks:
+    - name: Deploy selected services
+      include_role:
+        name: internal/docker-compose-service
+      vars:
+        service_name: "{{ item }}"
+      loop: "{{ services_to_deploy }}"
+      when: services_to_deploy is defined

@@ -1,3 +1,7 @@
 ansible_host: ubuntu-server.taile7003c.ts.net
 ansible_user: kennethl
 ansible_become_password: ***REMOVED***
+services_to_deploy:
+  - nginx
+  - actual-budget
+  - paperless

@@ -1,2 +1,2 @@
-- name: Import webserver configuration
-  import_playbook: webservers.yaml
+- name: Import docker-services configuration
+  import_playbook: docker-services.yaml

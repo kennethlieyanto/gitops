@@ -1,0 +1,2 @@
+docker_services_base_path: /opt/docker-services
+service_state: started
