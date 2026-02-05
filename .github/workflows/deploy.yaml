@@ -1,4 +1,4 @@
-name: Update server configurations (Ansible Playbooks)
+name: Update homeserver configurations
 
 on:
   push:
