@@ -1,11 +1,25 @@
 - name: Setup docker
-  hosts: webservers
+  hosts: docker_hosts
   become: true
   roles:
     - geerlingguy.docker
 
+- name: Add user to docker group
+  hosts: docker_hosts
+  become: true
+
+  vars:
+    username: kennethl
+
+  tasks:
+    - name: Add {{ username }} to docker group
+      ansible.builtin.user:
+        name: "{{ username }}"
+        groups: docker
+        append: yes
+
 - name: Manage Docker Compose Services
-  hosts: ubuntu-server
+  hosts: docker_hosts
   become: true
 
   tasks:

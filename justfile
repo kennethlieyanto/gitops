@@ -1,29 +1,32 @@
-docker-service-dir := "docker-services"
-
 default:
     @just --choose
 
-setup:
-    uv sync && uv run ansible-galaxy install -r ansible/requirements.yaml
+list-inventory limit:
+    # ansible-inventory -i ansible/inventory.yaml --list
+    ansible-playbook ansible/site.yaml -i ansible/inventory.yaml -l {{ limit }} --list-hosts
 
-play:
-    uv run ansible-playbook -i ansible/inventory/production.yaml ansible/site.yaml 
+edit-secret:
+    ansible-vault edit ansible/group_vars/docker_hosts/vault.yml
+
+setup-ansible:
+    ansible-galaxy install -r ansible/requirements.yaml
+
+play environment:
+    ansible-playbook -i ansible/inventory.yaml ansible/site.yaml --limit {{ environment }}
 
 lint:
-    uv run ansible-lint
+    ansible-lint
 
-start service:
-    cd {{ docker-service-dir }}/{{ service }} && docker compose up -d
+restore-nginx:
+    ansible-playbook -i ansible/inventory.yaml ansible/restore-volume.yaml \
+        --limit staging \
+        -e "service_name=nginx" \
+        -e "backup_base_filename=nginx-proxy-manager-backup" \
+        -e '{"volumes_to_restore": [{"name": "npm_data", "backup_path": "npm-data-backup"}, {"name": "npm_letsencrypt", "backup_path": "npm-letsencrypt-backup"}]}'
 
-stop service:
-    cd {{ docker-service-dir }}/{{ service }} && docker compose down 
-
-nginx_container_name := "nginx-backup-1"
-
-backup-nginx:
-    docker exec {{ nginx_container_name }} backup
-
-actual_container_name := "actual-budget-backup-1"
-
-backup-actual:
-    docker exec {{ actual_container_name }} backup
+restore-actual-budget:
+    ansible-playbook -i ansible/inventory.yaml ansible/restore-volume.yaml \
+        --limit staging \
+        -e "service_name=actual-budget" \
+        -e "backup_base_filename=actual-budget-backup" \
+        -e '{"volumes_to_restore": [{"name": "actual_data", "backup_path": "actual-budget-backup"}]}'

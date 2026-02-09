@@ -5,9 +5,6 @@ terraform.tfstate.backup
 # Terraform working directory
 .terraform/
 
-# Lock file (should not be shared across environments)
-.terraform.lock.hcl
-
 # Crash logs (in case Terraform crashes)
 crash.log
 

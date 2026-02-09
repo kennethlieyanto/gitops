@@ -1,0 +1,41 @@
+docker_hosts:
+  children:
+    staging:
+      hosts:
+        ubuntu-01:
+          ansible_host: 192.168.18.100
+          ansible_user: kennethl
+          ansible_become_password: ***REMOVED***
+
+          services_to_deploy:
+            - nginx
+            - actual-budget
+
+          # backup configuration
+          backup_cron_expression: '"0 20 * * *"'
+          backup_ssh_host: kennethl-ws
+          backup_ssh_port: 22
+          backup_ssh_user: kennethl
+          backup_ssh_remote_path: /home/kennethl/docker-volume-backup/
+          nginx_backup_filename: "nginx-proxy-manager-backup"
+          actual_budget_backup_filename: "actual-budget-backup"
+
+    production:
+      hosts:
+        ubuntu-02:
+          ansible_host: 192.168.18.101
+          ansible_user: kennethl
+          ansible_become_password: ***REMOVED***
+
+          services_to_deploy:
+            - nginx
+            - actual-budget
+
+          # backup configuration
+          backup_cron_expression: '"0 20 * * *"'
+          backup_ssh_host: kennethl-ws
+          backup_ssh_port: 22
+          backup_ssh_user: kennethl
+          backup_ssh_remote_path: /home/kennethl/docker-volume-backup/
+          nginx_backup_filename: "nginx-proxy-manager-backup"
+          actual_budget_backup_filename: "actual-budget-backup"

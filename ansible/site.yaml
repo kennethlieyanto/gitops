@@ -1,2 +1,2 @@
-- name: Import docker-services configuration
-  import_playbook: docker-services.yaml
+- name: Setup Docker
+  import_playbook: setup-docker.yaml

@@ -53,4 +53,3 @@ volumes:
 
 networks:
   ingress:
-    external: true
