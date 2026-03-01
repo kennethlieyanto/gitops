@@ -1,0 +1,112 @@
+- name: Install prerequisites
+  ansible.builtin.apt:
+    pkg:
+      - curl
+      - golang
+      - debian-keyring
+      - debian-archive-keyring
+      - apt-transport-https
+    update_cache: true
+
+- name: Add Caddy GPG key
+  ansible.builtin.apt_key:
+    url: https://dl.cloudsmith.io/public/caddy/xcaddy/gpg.key
+    keyring: /usr/share/keyrings/caddy-xcaddy-archive-keyring.gpg
+    state: present
+
+- name: Add Caddy repository
+  ansible.builtin.get_url:
+    url: https://dl.cloudsmith.io/public/caddy/xcaddy/debian.deb.txt
+    dest: /etc/apt/sources.list.d/caddy-xcaddy.list
+    mode: "0644"
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install xcaddy
+  ansible.builtin.apt:
+    pkg: xcaddy
+    state: present
+
+- name: Build Caddy with cloudflare plugin
+  ansible.builtin.command:
+    cmd: xcaddy build --with github.com/caddy-dns/cloudflare --output /tmp/caddy
+    creates: /tmp/caddy
+  register: caddy_build
+
+- name: Move Caddy binary to install directory
+  ansible.builtin.copy:
+    src: /tmp/caddy
+    dest: "{{ caddy_install_dir }}/caddy"
+    mode: "0755"
+    remote_src: true
+  when: caddy_build.changed
+
+- name: Create caddy system user
+  ansible.builtin.user:
+    name: "{{ caddy_user }}"
+    system: true
+    home: "{{ caddy_data_dir }}"
+    shell: /usr/sbin/nologin
+    create_home: true
+
+- name: Create caddy directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ caddy_user }}"
+    group: "{{ caddy_group }}"
+    mode: "0755"
+  loop:
+    - "{{ caddy_config_dir }}"
+    - "{{ caddy_data_dir }}"
+
+- name: Set capabilities on Caddy binary
+  ansible.builtin.command:
+    cmd: setcap cap_net_bind_service=+ep /usr/bin/caddy
+
+- name: Deploy caddy environment file
+  ansible.builtin.template:
+    src: caddy.env.j2
+    dest: "{{ caddy_config_dir }}/caddy.env"
+    mode: "0600"
+  notify: Restart caddy
+
+- name: Deploy Caddyfile
+  ansible.builtin.template:
+    src: Caddyfile.j2
+    dest: "{{ caddy_config_dir }}/Caddyfile"
+    mode: "0644"
+  notify: Restart caddy
+
+- name: Deploy systemd service file
+  ansible.builtin.copy:
+    content: |
+      [Unit]
+      Description=Caddy
+      After=network.target
+
+      [Service]
+      User={{ caddy_user }}
+      Group={{ caddy_group }}
+      EnvironmentFile={{ caddy_config_dir }}/caddy.env
+      ExecStart={{ caddy_install_dir }}/caddy run --environ --config {{ caddy_config_dir }}/Caddyfile
+      ExecReload={{ caddy_install_dir }}/caddy reload --config {{ caddy_config_dir }}/Caddyfile
+      Restart=on-failure
+
+      [Install]
+      WantedBy=multi-user.target
+    dest: /etc/systemd/system/caddy.service
+    mode: "0644"
+  notify: Restart caddy
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Ensure caddy service is enabled
+  ansible.builtin.systemd:
+    name: caddy
+    enabled: "{{ caddy_service_enabled }}"
+    state: "{{ caddy_service_state }}"

@@ -1,0 +1,5 @@
+- name: Setup Caddy
+  hosts: web
+  become: true
+  roles:
+    - internal/caddy

@@ -1,0 +1,8 @@
+staging:
+  children:
+    web:
+      hosts:
+        ingress-stage:
+    docker_hosts:
+      hosts:
+        ubuntu-01:

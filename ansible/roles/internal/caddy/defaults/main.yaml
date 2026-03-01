@@ -1,0 +1,9 @@
+caddy_cloudflare_api_token: ""
+caddy_sites: []
+caddy_user: caddy
+caddy_group: caddy
+caddy_install_dir: /usr/bin
+caddy_config_dir: /etc/caddy
+caddy_data_dir: /var/lib/caddy
+caddy_service_state: started
+caddy_service_enabled: true

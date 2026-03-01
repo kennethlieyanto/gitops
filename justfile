@@ -1,18 +1,17 @@
 default:
-    @just --choose
+    @just --list
 
-list-inventory limit:
-    # ansible-inventory -i ansible/inventory.yaml --list
-    ansible-playbook ansible/site.yaml -i ansible/inventory.yaml -l {{ limit }} --list-hosts
+list-inventory group_name:
+    cd ansible && ansible-inventory -i inventory/{{ group_name }}.yaml --graph
 
-edit-secret:
-    ansible-vault edit ansible/group_vars/docker_hosts/vault.yml
+secret group_name:
+    cd ansible && ansible-vault edit group_vars/{{ group_name }}/vault.yaml
 
 setup-ansible:
-    ansible-galaxy install -r ansible/requirements.yaml
+    cd ansible && ansible-galaxy install -r requirements.yaml
 
-play environment:
-    ansible-playbook -i ansible/inventory.yaml ansible/site.yaml --limit {{ environment }}
+play environment playbook='site':
+    cd ansible && ansible-playbook -i inventory/{{ environment }}.yaml {{ playbook }}.yaml
 
 lint:
     ansible-lint

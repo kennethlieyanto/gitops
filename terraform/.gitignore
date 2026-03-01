@@ -18,3 +18,4 @@ crash.log
 # Ignore provider logs (if enabled)
 *.log
 
+tfplan
