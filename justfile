@@ -1,8 +1,17 @@
 default:
     @just --list
 
-list-inventory group_name:
-    cd ansible && ansible-inventory -i inventory/{{ group_name }}.yaml --graph
+tfplan:
+    cd terraform && terraform plan -out tfplan
+
+tfapply:
+    cd terraform && terraform apply tfplan
+
+list-inventory-all:
+    cd ansible && ansible-inventory -i inventory/staging.yaml -i inventory/production.yaml --graph
+
+list-inventory environment:
+    cd ansible && ansible-inventory -i inventory/{{ environment }}.yaml --graph
 
 secret group_name:
     cd ansible && ansible-vault edit group_vars/{{ group_name }}/vault.yaml
