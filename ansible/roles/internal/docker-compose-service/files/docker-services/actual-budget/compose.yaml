@@ -19,8 +19,8 @@ services:
       - actual_data:/data
     networks:
       - ingress
-    expose:
-      - "5006"
+    ports:
+      - "5006:5006"
     healthcheck:
       test: ["CMD-SHELL", "node src/scripts/health-check.js"]
       interval: 60s
