@@ -5,6 +5,8 @@ ansible_become_password: ***REMOVED***
 services_to_deploy:
   - actual-budget
 
+enable_backup: false
+
 # Backup disabled because staging, will override the ones in prod be careful
 
 # backup configuration

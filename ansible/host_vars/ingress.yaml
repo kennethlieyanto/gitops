@@ -1,3 +1,4 @@
-ansible_host: 192.168.18.102
+# ansible_host: 192.168.18.102
+ansible_host: ingress
 ansible_user: kennethl
 ansible_become_password: ***REMOVED***

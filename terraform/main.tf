@@ -54,18 +54,3 @@ module "ingress" {
   ssh_public_key_content = data.local_file.ssh_public_key.content
   cloud_image_id         = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
 }
-
-module "ingress_stage" {
-  source = "./modules/vm"
-  providers = {
-    proxmox = proxmox
-  }
-
-  vm_name                = var.ingress_stage_vm_name
-  node_name              = var.proxmox_node_name
-  ip_address             = var.ingress_stage_vm_ip_address
-  gateway                = var.ingress_stage_vm_gateway
-  username               = var.ingress_stage_vm_username
-  ssh_public_key_content = data.local_file.ssh_public_key.content
-  cloud_image_id         = proxmox_virtual_environment_download_file.ubuntu_cloud_image.id
-}

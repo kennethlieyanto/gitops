@@ -1,2 +1,5 @@
 - name: Setup Docker
   import_playbook: setup-docker.yaml
+
+- name: Setup Caddy
+  import_playbook: setup-caddy.yaml
