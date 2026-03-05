@@ -38,6 +38,8 @@ services:
     volumes:
       - actual_data:/backup/actual-budget-backup:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
 networks:
   ingress:

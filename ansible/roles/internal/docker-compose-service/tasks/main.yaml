@@ -46,7 +46,7 @@
     src: "{{ service_name }}.backup.env.j2"
     dest: "{{ docker_services_base_path }}/{{ service_name }}/.backup.env"
     mode: "0600"
-  when: backup_env_template_stat.stat.exists and enable_backup | default(true) | bool
+  when: backup_env_template_stat.stat.exists and backup_enable | default(true) | bool
   register: backup_env_file
 
 - name: Deploy {{ service_name }} with docker-compose

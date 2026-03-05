@@ -3,3 +3,6 @@
 
 - name: Setup Caddy
   import_playbook: setup-caddy.yaml
+
+- name: Make sure timezone is on Asia/Jakarta
+  import_playbook: setup-timezone.yaml
