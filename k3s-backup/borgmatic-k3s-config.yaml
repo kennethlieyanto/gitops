@@ -1,0 +1,19 @@
+source_directories:
+  - /var/lib/rancher/k3s/server/db/
+  - /var/lib/rancher/k3s/server/token
+  - /var/lib/rancher/k3s/storage/
+
+repositories:
+  - path: ssh://kennethl@192.168.18.55/mnt/backup/k3s-backup-borg/
+
+ssh_command: ssh -i /root/.ssh/backup_key -o StrictHostKeyChecking=accept-new
+
+keep_daily: 7
+keep_weekly: 4
+keep_monthly: 12
+
+checks:
+  - name: repository
+  - name: archives
+
+encryption_passphrase: "***REMOVED***"
