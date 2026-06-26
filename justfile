@@ -1,12 +1,6 @@
 default:
     @just --list
 
-tfplan:
-    cd terraform && terraform plan -out tfplan
-
-tfapply:
-    cd terraform && terraform apply tfplan
-
 list-inventory-all:
     cd ansible && ansible-inventory -i inventory/staging.yaml -i inventory/production.yaml --graph
 
@@ -25,16 +19,17 @@ play environment playbook='site':
 lint:
     ansible-lint
 
-restore-nginx:
-    ansible-playbook -i ansible/inventory.yaml ansible/restore-volume.yaml \
-        --limit staging \
-        -e "service_name=nginx" \
-        -e "backup_base_filename=nginx-proxy-manager-backup" \
-        -e '{"volumes_to_restore": [{"name": "npm_data", "backup_path": "npm-data-backup"}, {"name": "npm_letsencrypt", "backup_path": "npm-letsencrypt-backup"}]}'
+repo-add:
+    argocd repo add git@github.com:kennethlieyanto/homeserver.git \
+      --ssh-private-key-path /home/kennethl/.ssh/id_ed25519 \
+      --insecure-skip-server-verification
 
-restore-actual-budget:
-    ansible-playbook -i ansible/inventory.yaml ansible/restore-volume.yaml \
-        --limit staging \
-        -e "service_name=actual-budget" \
-        -e "backup_base_filename=actual-budget-backup" \
-        -e '{"volumes_to_restore": [{"name": "actual_data", "backup_path": "actual-budget-backup"}]}'
+install-argocd:
+    helm repo add argo https://argoproj.github.io/argo-helm
+    helm upgrade --install argocd argo/argo-cd -n argocd --create-namespace \
+      --version 9.7.0 \
+      -f bootstrap/argocd-values.yaml
+
+bootstrap: repo-add
+    kubectl apply -f bootstrap/root-app.yaml
+
