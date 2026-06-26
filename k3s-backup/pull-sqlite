@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly REMOTE_HOST="kennethl@kennethl-asuslaptop"
+readonly REMOTE_PATH="/var/lib/rancher/k3s/server/db"
+readonly LOCAL_DEST="/mnt/backup/k3s-backup/sqlite-backend"
+readonly TIMESTAMP="$(date --utc +%Y-%m-%dT%H%MZ)"
+readonly STAGING="$(mktemp -d)"
+
+cleanup() { rm -rf "$STAGING"; }
+trap cleanup EXIT
+
+# Check server is reachable
+if ! ssh -o ConnectTimeout=10 -o BatchMode=yes "$REMOTE_HOST" true 2>/dev/null; then
+  echo "Server unreachable, skipping backup" >&2
+  exit 0
+fi
+
+mkdir -p "$LOCAL_DEST"
+
+# Pull the db directory into staging
+rsync -az --delete \
+  -e "ssh -o BatchMode=yes" \
+  --rsync-path="sudo rsync" \
+  "${REMOTE_HOST}:${REMOTE_PATH}/" \
+  "$STAGING/"
+
+# Archive into a dated tarball
+tar -czf "${LOCAL_DEST}/${TIMESTAMP}.tar.gz" \
+  -C "$STAGING" .
+
+echo "Backup saved: ${LOCAL_DEST}/${TIMESTAMP}.tar.gz"
