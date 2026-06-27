@@ -11,13 +11,13 @@ spec:
       targetRevision: 0.2.1
       helm:
         valueFiles:
-          - $values/k3s-gitops/workload/taskchamion-server/values.yaml
+          - $values/k3s-gitops/workload/taskchampion-server/values.yaml
     - repoURL: git@github.com:kennethlieyanto/homeserver.git
       targetRevision: HEAD
       ref: values
     - repoURL: git@github.com:kennethlieyanto/homeserver.git
       targetRevision: HEAD
-      path: k3s-gitops/workload/taskchamion-server/resources
+      path: k3s-gitops/workload/taskchampion-server/resources
   destination:
     server: https://kubernetes.default.svc
     namespace: taskwarrior
