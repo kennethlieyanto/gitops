@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: oci://quay.io/jetstack/charts/cert-manager
+      chart: cert-manager
+      targetRevision: v1.20.3
+      helm:
+        valueFiles:
+          - $values/k3s-gitops/platform/cert-manager/values.yaml
+    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+      targetRevision: HEAD
+      ref: values
+    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+      targetRevision: HEAD
+      path: k3s-gitops/platform/cert-manager/resources
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
