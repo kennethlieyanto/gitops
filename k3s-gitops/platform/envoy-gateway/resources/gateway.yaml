@@ -15,13 +15,26 @@ spec:
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: "*.kennethlieyanto.com"
+      hostname: "*.tail.kennethlieyanto.com"
       tls:
         mode: Terminate
         certificateRefs:
           - group: ""
             kind: Secret
-            name: wildcard-kennethlieyanto-com
+            name: wildcard-tail-kennethlieyanto-com
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.home.kennethlieyanto.com"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: wildcard-home-kennethlieyanto-com
       allowedRoutes:
         namespaces:
           from: All
