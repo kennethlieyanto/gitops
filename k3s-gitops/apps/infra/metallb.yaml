@@ -15,12 +15,12 @@ spec:
     - repoURL: git@github.com:kennethlieyanto/homeserver.git
       targetRevision: HEAD
       ref: values
-    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+    - repoURL: git@github.com:kennethlieyanto/homerserver.git
       targetRevision: HEAD
       path: k3s-gitops/infra/metallb/resources
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: metallb-system
   syncPolicy:
     automated:
       prune: true
