@@ -7,7 +7,7 @@ spec:
   secretName: wildcard-tail-kennethlieyanto-com
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-staging-dns
+    name: letsencrypt-staging
   dnsNames:
     - "*.tail.kennethlieyanto.com"
     - "tail.kennethlieyanto.com"
