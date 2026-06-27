@@ -12,7 +12,7 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
-    - name: https
+    - name: https-tail
       protocol: HTTPS
       port: 443
       hostname: "*.tail.kennethlieyanto.com"
@@ -25,7 +25,7 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
-    - name: https
+    - name: https-home
       protocol: HTTPS
       port: 443
       hostname: "*.home.kennethlieyanto.com"
