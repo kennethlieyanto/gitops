@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: actual-budget
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://community-charts.github.io/helm-charts
+      chart: actualbudget
+      targetRevision: 1.9.0
+      helm:
+        valueFiles:
+          - $values/k3s-gitops/workload/actual-budget/values.yaml
+    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+      targetRevision: HEAD
+      ref: values
+    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+      targetRevision: HEAD
+      path: k3s-gitops/workload/actual-budget/resources
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: actual-budget
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
