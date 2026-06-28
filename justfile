@@ -20,7 +20,7 @@ lint:
     ansible-lint
 
 argocd-bootstrap: 
-    kubectl apply -f k3s-gitops/bootstrap/root-app.yaml
+    kubectl apply -f k3s-gitops/bootstrap/manifest/
 
 argoocd_repo_url := "https://argoproj.github.io/argo-helm"
 argocd_helm_chart_version := "9.7.0"
