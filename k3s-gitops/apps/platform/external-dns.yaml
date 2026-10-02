@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-dns
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://kubernetes-sigs.github.io/external-dns/
+      chart: external-dns
+      targetRevision: 1.23.0
+      helm:
+        valueFiles:
+          - $values/k3s-gitops/platform/external-dns/values.yaml
+    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+      targetRevision: HEAD
+      ref: values
+    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+      targetRevision: HEAD
+      path: k3s-gitops/platform/external-dns/resources
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-dns
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
