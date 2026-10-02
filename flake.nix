@@ -1,5 +1,5 @@
 {
-  description = "Homeserver configuration";
+  description = "GitOps configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

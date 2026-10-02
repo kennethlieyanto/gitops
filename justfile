@@ -31,6 +31,6 @@ argocd-install:
       -f k3s-gitops/bootstrap/argocd-values.yaml
 
 argocd-repo-add:
-    argocd repo add git@github.com:kennethlieyanto/homeserver.git \
+    argocd repo add git@github.com:kennethlieyanto/gitops.git \
       --ssh-private-key-path /home/kennethl/.ssh/id_ed25519 \
       --insecure-skip-server-verification

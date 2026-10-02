@@ -6,7 +6,7 @@ sources:
 
 policy: sync
 registry: txt
-txtOwnerId: homeserver
+txtOwnerId: gitops
 
 domainFilters:
   - home.kennethlieyanto.com

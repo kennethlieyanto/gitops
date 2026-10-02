@@ -12,10 +12,10 @@ spec:
       helm:
         valueFiles:
           - $values/k3s-gitops/workload/taskchampion-server/values.yaml
-    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+    - repoURL: git@github.com:kennethlieyanto/gitops.git
       targetRevision: HEAD
       ref: values
-    - repoURL: git@github.com:kennethlieyanto/homeserver.git
+    - repoURL: git@github.com:kennethlieyanto/gitops.git
       targetRevision: HEAD
       path: k3s-gitops/workload/taskchampion-server/resources
   destination:
