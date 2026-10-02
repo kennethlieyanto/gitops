@@ -9,7 +9,7 @@ registry: txt
 txtOwnerId: gitops
 
 domainFilters:
-  - home.kennethlieyanto.com
+  - kennethlieyanto.com
 
 excludeDomains:
   - tail.kennethlieyanto.com
