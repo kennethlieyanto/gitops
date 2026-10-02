@@ -1,3 +1,5 @@
+# Full settings can be generated
+# https://torsion.org/borgmatic/how-to/set-up-backups/
 source_directories:
   - /var/lib/rancher/k3s/server/db/
   - /var/lib/rancher/k3s/server/token

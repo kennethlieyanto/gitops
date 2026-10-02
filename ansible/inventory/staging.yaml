@@ -1,5 +1,0 @@
-staging:
-  children:
-    docker_hosts:
-      hosts:
-        ubuntu-01:

@@ -1,8 +1,0 @@
-production:
-  children:
-    web:
-      hosts:
-        ingress:
-    docker_hosts:
-      hosts:
-        ubuntu-02:

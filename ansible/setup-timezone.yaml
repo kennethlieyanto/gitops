@@ -1,8 +1,0 @@
-- name: Set timezone to Asia/Jakarta
-  hosts: all
-  become: true
-
-  tasks:
-    - name: Set timezone to Asia/Jakarta
-      community.general.timezone:
-        name: Asia/Jakarta
