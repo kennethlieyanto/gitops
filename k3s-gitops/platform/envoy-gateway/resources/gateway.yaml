@@ -12,19 +12,6 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
-    - name: https-tail
-      protocol: HTTPS
-      port: 443
-      hostname: "*.tail.kennethlieyanto.com"
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - group: ""
-            kind: Secret
-            name: wildcard-tail-kennethlieyanto-com
-      allowedRoutes:
-        namespaces:
-          from: All
     - name: https-home
       protocol: HTTPS
       port: 443
