@@ -11,9 +11,6 @@ txtOwnerId: gitops
 domainFilters:
   - kennethlieyanto.com
 
-excludeDomains:
-  - tail.kennethlieyanto.com
-
 env:
   - name: CF_API_TOKEN
     valueFrom:
