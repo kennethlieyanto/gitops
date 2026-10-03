@@ -18,6 +18,7 @@
         packages = with pkgs; [
           terraform
           just
+          bws
         ];
       };
     };

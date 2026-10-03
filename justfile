@@ -20,21 +20,21 @@ argocd-repo-add:
 
 # Creates the R2 state bucket with temporary local state (run once).
 tf-bootstrap:
-    terraform -chdir=terraform/bootstrap init
-    terraform -chdir=terraform/bootstrap apply
+    bws run -- terraform -chdir=terraform/bootstrap init
+    bws run -- terraform -chdir=terraform/bootstrap apply
 
 # Migrates bootstrap local state into the R2 state bucket (run once, after tf-bootstrap).
 tf-bootstrap-migrate:
-    terraform -chdir=terraform/bootstrap init -backend-config=backend.hcl -migrate-state
+    bws run -- terraform -chdir=terraform/bootstrap init -backend-config=backend.hcl -migrate-state
 
 tf-init stack="prod/cloudflare-backup":
-    terraform -chdir=terraform/{{stack}} init -backend-config=backend.hcl
+    bws run -- terraform -chdir=terraform/{{stack}} init -backend-config=backend.hcl
 
 tf-plan stack="prod/cloudflare-backup":
-    terraform -chdir=terraform/{{stack}} plan
+    bws run -- terraform -chdir=terraform/{{stack}} plan
 
 tf-apply stack="prod/cloudflare-backup":
-    terraform -chdir=terraform/{{stack}} apply
+    bws run -- terraform -chdir=terraform/{{stack}} apply
 
 tf-fmt:
     terraform fmt -recursive terraform
