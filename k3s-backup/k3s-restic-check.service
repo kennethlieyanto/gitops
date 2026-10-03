@@ -1,0 +1,9 @@
+[Unit]
+Description=Check the k3s restic repository
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/restic/k3s.env
+ExecStart=/usr/bin/restic check --read-data-subset=5%%

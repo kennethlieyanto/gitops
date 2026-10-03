@@ -1,0 +1,12 @@
+[Unit]
+Description=Back up k3s state and LocalPath volumes with restic
+After=local-fs.target
+ConditionPathExists=/var/lib/rancher/k3s/server/db/state.db
+ConditionPathExists=/var/lib/rancher/k3s/server/token
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/restic/k3s.env
+ExecStart=/usr/local/sbin/k3s-restic-backup.sh
+Nice=10
+IOSchedulingClass=best-effort
