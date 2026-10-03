@@ -2,7 +2,7 @@
   description = "GitOps configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixos-26.05";
   };
 
   outputs =
