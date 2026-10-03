@@ -1,3 +1,28 @@
 configs:
   params:
     server.insecure: true
+
+server:
+  httproute:
+    enabled: true
+    parentRefs:
+      - name: eg
+        namespace: envoy-gateway-system
+        sectionName: https-home
+    hostnames:
+      - argocd.home.kennethlieyanto.com
+
+  grpcroute:
+    enabled: true
+    parentRefs:
+      - name: eg
+        namespace: envoy-gateway-system
+        sectionName: https-home
+    hostnames:
+      - argocd.home.kennethlieyanto.com
+    rules:
+      - matches:
+          - headers:
+              - name: content-type
+                type: RegularExpression
+                value: application/grpc.*
