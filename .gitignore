@@ -1,2 +1,11 @@
 .vault_pass
 .direnv
+
+# terraform
+.env
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+backend.hcl
+*.tfvars

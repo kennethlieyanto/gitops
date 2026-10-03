@@ -17,3 +17,12 @@ argocd-repo-add:
     argocd repo add git@github.com:kennethlieyanto/gitops.git \
       --ssh-private-key-path /home/kennethl/.ssh/id_ed25519 \
       --insecure-skip-server-verification
+
+# Creates the R2 state bucket with temporary local state (run once).
+tf-bootstrap:
+    terraform -chdir=terraform/bootstrap init
+    terraform -chdir=terraform/bootstrap apply
+
+# Migrates bootstrap local state into the R2 state bucket (run once, after tf-bootstrap).
+tf-bootstrap-migrate:
+    terraform -chdir=terraform/bootstrap init -backend-config=backend.hcl -migrate-state
