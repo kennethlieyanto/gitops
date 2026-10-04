@@ -8,13 +8,25 @@
         },
         "terraform": {
             "type": "local",
-            "command": ["docker", "run", "-i", "--rm", "hashicorp/terraform-mcp-server:1.3.0"],
+            "command": [
+                "docker",
+                "run",
+                "-i",
+                "--rm",
+                "hashicorp/terraform-mcp-server:1.3.0"
+            ],
             "enabled": true
         },
         "ssh": {
             "type": "local",
             "command": ["npx", "-y", "ssh-mcp"],
             "enabled": true
+        }
+    },
+    "references": {
+        "k8s-gitops": {
+            "path": "../../work/kubernetes-gitops",
+            "description": "Use this as a reference when I want to add some other components."
         }
     }
 }
