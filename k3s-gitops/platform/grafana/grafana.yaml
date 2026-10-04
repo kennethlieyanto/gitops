@@ -1,0 +1,51 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  namespace: grafana
+  labels:
+    monitoring: grafana
+spec:
+  disableDefaultAdminSecret: false
+  version: 13.2.3
+  config:
+    log:
+      mode: console
+    server:
+      root_url: https://grafana.home.kennethlieyanto.com
+    analytics:
+      reporting_enabled: "false"
+      check_for_plugin_updates: "false"
+    plugins:
+      preinstall_disabled: "true"
+  persistentVolumeClaim:
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+  httpRoute:
+    spec:
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: eg
+          namespace: envoy-gateway-system
+      hostnames:
+        - grafana.home.kennethlieyanto.com
+  deployment:
+    spec:
+      strategy:
+        type: Recreate
+      template:
+        spec:
+          securityContext:
+            fsGroup: 10001
+          containers:
+            - name: grafana
+              image: docker.io/grafana/grafana:13.2.3
+          volumes:
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: grafana-pvc

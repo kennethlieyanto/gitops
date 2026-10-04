@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  sources:
+    - repoURL: ghcr.io/grafana/helm-charts
+      chart: grafana-operator
+      targetRevision: 5.25.0
+      helm:
+        releaseName: grafana-operator
+        valueFiles:
+          - $values/k3s-gitops/platform/grafana-operator/values.yaml
+    - repoURL: git@github.com:kennethlieyanto/gitops.git
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: grafana-operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
