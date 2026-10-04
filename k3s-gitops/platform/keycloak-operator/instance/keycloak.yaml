@@ -5,6 +5,9 @@ metadata:
   namespace: keycloak
 spec:
   instances: 2
+  bootstrapAdmin:
+    user:
+      secret: keycloak-admin
   db:
     vendor: postgres
     host: keycloak-db-rw.keycloak.svc.cluster.local
