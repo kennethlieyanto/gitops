@@ -1,6 +1,26 @@
+global:
+  domain: argocd.home.kennethlieyanto.com
+
 configs:
   params:
     server.insecure: true
+
+  cm:
+    oidc.config: |
+      name: Keycloak
+      issuer: https://keycloak.home.kennethlieyanto.com/realms/kennethlieyanto
+      clientID: argocd
+      enablePKCEAuthentication: true
+      refreshTokenThreshold: 2m
+      requestedScopes: ["openid", "profile", "email", "offline_access"]
+
+  rbac:
+    policy.csv: |
+      g, admin, role:admin
+    scopes: "[argocd_roles]"
+
+dex:
+  enabled: false
 
 server:
   httproute:
