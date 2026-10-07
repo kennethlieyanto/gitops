@@ -13,6 +13,26 @@ spec:
       mode: console
     server:
       root_url: https://grafana.home.kennethlieyanto.com
+    auth:
+      disable_login_form: "true"
+    auth.generic_oauth:
+      enabled: "true"
+      name: Keycloak
+      icon: key
+      scopes: openid profile email
+      auth_url: https://keycloak.home.kennethlieyanto.com/realms/kennethlieyanto/protocol/openid-connect/auth
+      token_url: https://keycloak.home.kennethlieyanto.com/realms/kennethlieyanto/protocol/openid-connect/token
+      api_url: https://keycloak.home.kennethlieyanto.com/realms/kennethlieyanto/protocol/openid-connect/userinfo
+      role_attribute_strict: "true"
+      allow_assign_grafana_admin: "true"
+      allow_sign_up: "true"
+      role_attribute_path: >-
+        contains(resource_access.grafana.roles[*], 'grafana-admin') && 'GrafanaAdmin'
+        || contains(resource_access.grafana.roles[*], 'admin') && 'Admin'
+        || contains(resource_access.grafana.roles[*], 'editor') && 'Editor'
+        || contains(resource_access.grafana.roles[*], 'viewer') && 'Viewer'
+      client_id: grafana
+      client_secret: ${GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
     analytics:
       reporting_enabled: "false"
       check_for_plugin_updates: "false"
@@ -45,6 +65,9 @@ spec:
           containers:
             - name: grafana
               image: docker.io/grafana/grafana:13.2.3
+              envFrom:
+                - secretRef:
+                    name: grafana-oidc
           volumes:
             - name: grafana-data
               persistentVolumeClaim:
