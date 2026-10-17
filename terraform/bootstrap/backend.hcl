@@ -1,12 +1,12 @@
 # Copy to backend.hcl and fill in the account ID.
-# Used by: terraform init -backend-config=backend.hcl
+# Used by: terraform init -backend-config=backend.hcl -migrate-state
 
 bucket = "kennethl-tfstate"
-key    = "prod/cloudflare-backup/terraform.tfstate"
+key    = "bootstrap/terraform.tfstate"
 region = "auto"
 
 endpoints = {
-  s3 = "https://REPLACE_WITH_ACCOUNT_ID.r2.cloudflarestorage.com"
+  s3 = "https://e5b1e4474fb9e39e954f646bd697e162.r2.cloudflarestorage.com"
 }
 
 skip_credentials_validation = true

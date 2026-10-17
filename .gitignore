@@ -8,5 +8,4 @@
 *.tfstate
 *.tfstate.*
 crash.log
-backend.hcl
 *.tfvars
