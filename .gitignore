@@ -3,6 +3,7 @@
 
 # terraform
 .env
+.env.local
 **/.terraform/*
 *.tfstate
 *.tfstate.*
