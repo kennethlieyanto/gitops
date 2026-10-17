@@ -1,0 +1,10 @@
+pre-commit:
+  parallel: true
+  commands:
+    gitleaks:
+      run: gitleaks git --pre-commit --redact --staged --verbose
+
+pre-push:
+  commands:
+    gitleaks:
+      run: gitleaks git --redact

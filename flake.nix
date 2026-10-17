@@ -19,6 +19,8 @@
           terraform
           just
           bws
+          gitleaks
+          lefthook
         ];
       };
     };

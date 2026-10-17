@@ -38,3 +38,11 @@ tf-apply stack="prod/cloudflare-backup":
 
 tf-fmt:
     terraform fmt -recursive terraform
+
+# Installs the git hooks (gitleaks secret scanning) via lefthook.
+setup:
+    lefthook install
+
+# Scans the full git history for leaked secrets.
+gitleaks:
+    gitleaks git --redact
