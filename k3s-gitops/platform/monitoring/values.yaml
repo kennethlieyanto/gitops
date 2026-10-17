@@ -1,0 +1,36 @@
+grafana:
+  enabled: false
+  forceDeployDashboards: true
+  defaultDashboardsEnabled: true
+  operator:
+    dashboardsConfigMapRefEnabled: true
+    matchLabels:
+      monitoring: grafana
+    folder: Kubernetes
+
+alertmanager:
+  enabled: false
+
+# k3s binds these to 127.0.0.1, so the default ServiceMonitors would be
+# permanently reported as down.
+kubeEtcd:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
