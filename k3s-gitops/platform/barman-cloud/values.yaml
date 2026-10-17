@@ -1,0 +1,2 @@
+# Intentionally left empty. The Barman Cloud plugin uses chart defaults.
+# Overrides (resources, replicaCount, etc.) can be added here.

@@ -14,7 +14,8 @@ terraform/
 ├── bootstrap/                  # creates the central remote-state R2 bucket
 │                               # (local state, applied once)
 └── prod/
-    └── cloudflare-backup/      # R2 bucket that restic writes to
+    ├── cloudflare-backup/           # R2 bucket that restic writes to
+    └── cloudflare-postgres-backup/  # R2 bucket for CloudNativePG/Barman backups
 ```
 
 Each directory under `bootstrap/` and `prod/` is a root module with its own

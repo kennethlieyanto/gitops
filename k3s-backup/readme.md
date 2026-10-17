@@ -8,16 +8,79 @@ restic and systemd.
 
 ## What is backed up
 
-| Data | Purpose |
-| --- | --- |
-| `/var/lib/rancher/k3s/server/db/state.db` | k3s SQLite datastore and cluster state |
-| `/var/lib/rancher/k3s/server/token` | Required with `state.db` to restore the datastore |
-| `/var/lib/rancher/k3s/storage/` | LocalPath PersistentVolume data |
+| Data                                      | Purpose                                           |
+| ----------------------------------------- | ------------------------------------------------- |
+| `/var/lib/rancher/k3s/server/db/state.db` | k3s SQLite datastore and cluster state            |
+| `/var/lib/rancher/k3s/server/token`       | Required with `state.db` to restore the datastore |
+| `/var/lib/rancher/k3s/storage/`           | LocalPath PersistentVolume data                   |
 
 The backup script uses `sqlite3 .backup` for SQLite files and copies other PV
 files normally. This includes Actual Budget attachments such as `.blob` files.
 Git-managed Kubernetes manifests are already backed up in the Git repository
 and are not duplicated here.
+
+The host-level restic copy of `/var/lib/rancher/k3s/storage/` also captures the
+CloudNativePG `local-path` volumes, but that is a **crash-consistent file copy,
+not a valid Postgres backup** (no WAL, no point-in-time recovery). It is only a
+coarse last-resort copy of the whole node.
+
+## Postgres (CloudNativePG) backups
+
+The Keycloak Postgres cluster (`keycloak-db`, operator 1.30) is backed up
+separately and continuously with the **Barman Cloud CNPG-I plugin** to a
+dedicated R2 bucket. This provides WAL archiving, daily physical base backups,
+and point-in-time recovery (PITR).
+
+| Item        | Value                                                                                                                           |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| R2 bucket   | `keycloak-db-backups` (Terraform stack `prod/cloudflare-postgres-backup`)                                                       |
+| ObjectStore | `keycloak-db-backup` (namespace `keycloak`)                                                                                     |
+| Credentials | GSM secrets `keycloak-db-backup-r2-access-key-id` / `...-secret-access-key`, synced by `ExternalSecret` `keycloak-db-backup-r2` |
+| Schedule    | daily at 02:30 (`ScheduledBackup` `keycloak-db-backup`)                                                                         |
+| Retention   | 30 days (`ObjectStore.spec.retentionPolicy`)                                                                                    |
+
+The plugin must run in the same namespace as the operator (`cnpg-system`); it is
+deployed by the `barman-cloud-plugin` ArgoCD Application (chart
+`plugin-barman-cloud`).
+
+### One-time setup
+
+1. Apply the Terraform stack:
+
+   ```sh
+   cp terraform/prod/cloudflare-postgres-backup/backend.hcl.example \
+      terraform/prod/cloudflare-postgres-backup/backend.hcl
+   # Fill in the Cloudflare account ID in backend.hcl.
+   just tf-init prod/cloudflare-postgres-backup
+   just tf-apply prod/cloudflare-postgres-backup
+   ```
+
+2. Create an R2 S3 token scoped to `keycloak-db-backups` (`Object Read & Write`)
+   and store the access key ID and secret in Google Secret Manager as
+   `keycloak-db-backup-r2-access-key-id` and
+   `keycloak-db-backup-r2-secret-access-key`.
+
+3. Set the R2 endpoint in
+   `k3s-gitops/platform/cloudnative-pg/resources/keycloak-db-objectstore.yaml`
+   (`endpointURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com`).
+
+4. Commit and let ArgoCD sync. Enabling `.spec.plugins` triggers a rolling
+   restart of the Postgres instances.
+
+### Validate and restore
+
+Check WAL archiving and backups:
+
+```sh
+kubectl -n keycloak get objectstore,externalsecret,scheduledbackup
+kubectl cnpg backup -n keycloak keycloak-db \
+  --method=plugin --plugin-name=barman-cloud.cloudnative-pg.io
+kubectl -n keycloak get backups.postgresql.cnpg.io
+```
+
+Restore into a throwaway cluster in a scratch namespace and verify, then delete
+it. See the CloudNativePG plugin docs for the `bootstrap.recovery` /
+`externalClusters` manifest.
 
 ## Cloudflare and Terraform
 

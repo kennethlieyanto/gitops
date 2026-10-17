@@ -1,0 +1,28 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: keycloak-db-backup
+  namespace: keycloak
+spec:
+  configuration:
+    destinationPath: s3://keycloak-db-backups/
+    endpointURL: https://e5b1e4474fb9e39e954f646bd697e162.r2.cloudflarestorage.com
+    s3Credentials:
+      accessKeyId:
+        name: keycloak-db-backup-r2
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: keycloak-db-backup-r2
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  retentionPolicy: "30d"
+  # Cloudflare R2 rejects the newer default S3 checksum algorithm.
+  instanceSidecarConfiguration:
+    env:
+      - name: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
