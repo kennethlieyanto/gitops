@@ -22,11 +22,5 @@
             "command": ["npx", "-y", "ssh-mcp"],
             "enabled": false
         }
-    },
-    "references": {
-        "k8s-gitops": {
-            "path": "../../work/kubernetes-gitops",
-            "description": "Use this as a reference when I want to add some other components."
-        }
     }
 }
