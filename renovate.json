@@ -1,0 +1,54 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Jakarta",
+  "argocd": {
+    "managerFilePatterns": ["/^k3s-gitops\\/apps\\/.+\\.ya?ml$/"]
+  },
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/^k3s-gitops\\/platform\\/keycloak-operator\\/operator\\/operator\\.yaml$/"
+    ]
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Argo CD chart version pinned in the justfile",
+      "managerFilePatterns": ["/(^|\\/)justfile$/"],
+      "matchStrings": [
+        "argocd_helm_chart_version := \"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "argo-cd",
+      "registryUrlTemplate": "https://argoproj.github.io/argo-helm",
+      "datasourceTemplate": "helm"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Ignore the self-referencing Git sources (targetRevision: HEAD)",
+      "matchManagers": ["argocd"],
+      "matchDepNames": ["git@github.com:kennethlieyanto/gitops.git"],
+      "enabled": false
+    },
+    {
+      "description": "Argo CD's OCI repoURL already ends in the chart name, so drop the duplicated segment for the docker datasource",
+      "matchManagers": ["argocd"],
+      "matchDepNames": ["quay.io/jetstack/charts/cert-manager/cert-manager"],
+      "overrideDepName": "quay.io/jetstack/charts/cert-manager",
+      "overridePackageName": "quay.io/jetstack/charts/cert-manager"
+    },
+    {
+      "description": "Argo CD's OCI repoURL already ends in the chart name, so drop the duplicated segment for the docker datasource",
+      "matchManagers": ["argocd"],
+      "matchDepNames": ["docker.io/envoyproxy/gateway-helm/gateway-helm"],
+      "overrideDepName": "docker.io/envoyproxy/gateway-helm",
+      "overridePackageName": "docker.io/envoyproxy/gateway-helm"
+    },
+    {
+      "description": "Only track container images in the Keycloak operator manifest, not built-in Kubernetes apiVersions",
+      "matchManagers": ["kubernetes"],
+      "matchDatasources": ["kubernetes-api"],
+      "enabled": false
+    }
+  ]
+}

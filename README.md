@@ -70,6 +70,30 @@ leaked secrets in both git history and staged changes (rules in
 - CI runs the same scan on every push and pull request
   (`.github/workflows/gitleaks.yml`).
 
+## Dependency updates
+
+[Renovate](https://docs.renovatebot.com) runs daily (20:00 UTC) via
+`.github/workflows/renovate.yml` and opens PRs for:
+
+- Helm chart versions in the ArgoCD `Application` manifests under
+  `k3s-gitops/apps/` (`argocd` manager, including the OCI charts)
+- The ArgoCD chart version pinned in the `justfile` (regex manager)
+- Terraform provider constraints under `terraform/`
+- GitHub Actions used by the workflows
+- The Keycloak operator image in
+  `k3s-gitops/platform/keycloak-operator/operator/operator.yaml`
+
+It needs a **`RENOVATE_TOKEN`** repository secret: a fine-grained PAT with
+read/write access to **Contents**, **Issues**, **Pull requests** and
+**Workflows** (Renovate bumps action versions in `.github/workflows/`).
+Alternatively use `${{ secrets.GITHUB_TOKEN }}` and enable *Allow GitHub Actions
+to create and approve pull requests*, at the cost of CI not running on Renovate's
+PRs.
+
+Deliberately not automated: the `Grafana` CR's `spec.version` and image in
+`k3s-gitops/platform/grafana/grafana.yaml` (they must be bumped together), and
+`flake.lock` (Renovate's `nix` manager needs Nix on the runner).
+
 ## Dev shell
 
 The Nix flake (via direnv) provides `terraform`, `just`, `bws`, `gitleaks`, and
