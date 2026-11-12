@@ -18,7 +18,6 @@
         packages = with pkgs; [
           terraform
           just
-          bws
           gitleaks
           lefthook
         ];
